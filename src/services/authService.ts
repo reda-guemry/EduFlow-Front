@@ -18,7 +18,7 @@ export async function register(data: RegisterData): Promise<responseAuth> {
         headers: {
             "Accept": "application/json",
         },
-    } ,() => {} ,  );
+    } ,() => {});
 }
 
 

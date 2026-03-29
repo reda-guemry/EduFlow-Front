@@ -13,6 +13,7 @@ export type AuthContextType = {
     user : User | null ; 
     setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
+    
 }
 
 export type LoginData = {
@@ -32,7 +33,6 @@ export type RegisterData = {
 
 export type AuthData = {
     token: string;
-    refresh_token: string;
     user: User;
 }
 

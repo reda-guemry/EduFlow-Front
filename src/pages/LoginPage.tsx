@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { LoginData } from "../types/auth";
 import { login } from "../services/authService";
+import { useAuth } from "../customhook/useAuth";
 
 function LoginPage() {
     const [ password , setPassword ] = useState<string>('') ;
     const [email , setEmail] = useState<string>('') ; 
+    const { setAccessToken , setUser } = useAuth() ;
     
     async function handleSubmit(event : React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -15,7 +17,11 @@ function LoginPage() {
         
         try {
             const result = await login(loginData) ;  
-            console.log(result);
+
+            setAccessToken(result.data.token) ;
+            setUser(result.data.user) ;
+
+            window.location.href = "/dashboard" ;
             
         }catch(error) {
             if (error instanceof Error) {

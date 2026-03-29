@@ -14,6 +14,8 @@ function RegisterPage() {
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState<UserRole>("student");
 
+  const {setAccessToken , setUser , accessToken } = useAuth() ;
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -30,11 +32,12 @@ function RegisterPage() {
 
     try {
       const result = await register(registerData);
-      
-      const {setAccessToken , setUser } = useAuth() ;
 
       setAccessToken(result.data.token) ;
       setUser(result.data.user) ;
+      
+      window.location.href = "/login" ;
+
 
     } catch (error) {
       if (error instanceof Error) {
