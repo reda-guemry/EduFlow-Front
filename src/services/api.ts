@@ -1,38 +1,48 @@
-
-type ApiOptions = {
-    method?: string;
-    headers?: Record<string, string>;
-    data?: any;
-}
+import type { ApiOptions } from "../types/apiOption";
+import { ApiError } from "../types/eureur";
+import { refreshAccessToken } from "./authService";
 
 
-export async function api<T>(endpoint: string, options: ApiOptions): Promise<T> {
+
+
+
+export async function api<T>(endpoint: string, options: ApiOptions, setAccessToken: (token: string | null) => void): Promise<T> {
+    const {
+        method = "GET",
+        accessToken = null,
+        body,
+        headers = {},
+        retry = false,
+    } = options;
+
     const response = await fetch(`http://localhost:8000/api/${endpoint}`, {
-        method: options.method || "GET",
+        method,
+        credentials: "include",
         headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            ...options.headers,
+            ...headers,
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+            ...(body ? { "Content-Type": "application/json" } : {}),
         },
-        credentials: 'include',
-        body: options.data ? JSON.stringify(options.data) : undefined,
+        ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
-    const result = await response.json();
+    const data = await response.json().catch(() => null);
 
-    if (!response.ok) {
-        if (result.errors) {
-            const messages = Object.values(result.errors)
-                .flat()
-                .join(" | ");
-
-            throw new Error(messages);
-        }
-
-        throw new Error(result.message || result.error || "Request failed");
+    if (response.ok) {
+        return data;
     }
 
-    return result;
+    if (retry && response.status === 401 && endpoint !== 'refresh-token' && setAccessToken) {
+        const newaccesToken = await refreshAccessToken() ; 
+
+        setAccessToken(newaccesToken) ;
+
+        return api<T>(endpoint, { ...options, accessToken: newaccesToken, retry: true }, setAccessToken);
+
+    }
+
+
+    throw new ApiError(data.message || "API request failed", response.status, data);
 
 };
 

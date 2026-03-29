@@ -1,37 +1,52 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import type { RegisterData , UserRole } from "../types/auth";
+import type { RegisterData, UserRole } from "../types/auth";
 import { register } from "../services/authService";
-
+import { ApiError } from "../types/eureur";
+import { useAuth } from "../customhook/useAuth";
 
 function RegisterPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [email , setEmail] = useState('') ; 
-    const [password , setPassword] = useState('') ;
-    const [confirmPassword , setConfirmPassword] = useState('') ;
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [role, setRole] = useState<UserRole>("student");
 
-    const [firstName , setFirstName] = useState('') ;
-    const [lastName , setLastName] = useState('') ;
-    const [role , setRole] = useState<UserRole>('student') ;
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-    async function handleSubmit(event : React.FormEvent<HTMLFormElement>) {
-        event.preventDefault() ; 
+    const registerData: RegisterData = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      password,
+      role,
+      password_confirmation: confirmPassword,
+    };
 
-        const registerData : RegisterData = { first_name : firstName , last_name :  lastName , email, password , role , password_confirmation : confirmPassword } ;
+    // console.log( registerData) ;
 
-        // console.log( registerData) ;
+    try {
+      const result = await register(registerData);
+      
+      const {setAccessToken , setUser } = useAuth() ;
 
-        
-        try{
-            const result = await register(registerData) ;
-            console.log(result) ; 
+      setAccessToken(result.data.token) ;
+      setUser(result.data.user) ;
 
-        } catch (error) {
-            console.error(error)
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error instanceof ApiError) {
+          console.log("Message:", error.message);
+          console.log("Validation errors:", error.data);
         }
-
-        
+      } else {
+        console.error("Unexpected error : ", error);
+      }
     }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -94,7 +109,9 @@ function RegisterPage() {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Confirm Password</label>
+            <label className="block text-sm text-gray-600 mb-1">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -111,7 +128,7 @@ function RegisterPage() {
               name="role"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
               onChange={(event) => setRole(event.target.value as UserRole)}
-              >
+            >
               <option value="student">Student</option>
               <option value="teacher">Teacher</option>
             </select>
@@ -127,10 +144,11 @@ function RegisterPage() {
         </form>
 
         <p className="p-1.5 font-bold">
-          Already have an account? <Link to="/login" className="text-green-700">Login</Link>
+          Already have an account?{" "}
+          <Link to="/login" className="text-green-700">
+            Login
+          </Link>
         </p>
-
-
       </div>
     </div>
   );

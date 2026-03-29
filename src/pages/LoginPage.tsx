@@ -18,7 +18,11 @@ function LoginPage() {
             console.log(result);
             
         }catch(error) {
-            console.error(error)
+            if (error instanceof Error) {
+                console.log("Login error : ", error.message);
+            } else {
+                console.error("Unexpected error : ", error);
+            }
         }
     }
   

@@ -8,6 +8,13 @@ export interface User {
     role: UserRole;
 }
 
+export type AuthContextType = {
+    accessToken: string | null;
+    user : User | null ; 
+    setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
+    setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
 export type LoginData = {
     email: string;
     password: string;
