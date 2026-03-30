@@ -1,8 +1,10 @@
+import type { User } from "./auth";
 
 export type GroupProgress = {
   id: number;
   name: string;
-  progress: number;
+  course_id: number;
+  students? : User [];
 };
 
 export type Course = {
@@ -12,7 +14,7 @@ export type Course = {
   price: number;
   category_id: number;
   category_name: string;
-  groups: GroupProgress[];
+  groups?: GroupProgress[];
 };
 
 export type Category = {

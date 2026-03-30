@@ -7,7 +7,7 @@ import type { User } from "../types/auth";
 
 
 
-export async function api<T>(endpoint: string, options: ApiOptions = {}, setAccessToken: (token: string | null) => void, setUser: (user: User | null) => void = () => { }): Promise<T> {
+export async function api<T>(endpoint: string, options: ApiOptions = {}, setAccessToken: (token: string | null) => void , setUser: (user: User | null) => void = () => { }): Promise<T> {
     const {
         method = "GET",
         accessToken = null,
@@ -30,6 +30,8 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
     });
 
     const data = await response.json().catch(() => null);
+
+    console.log('response : ', data);
 
     if (response.ok) {
         return data as T;

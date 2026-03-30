@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../customhook/useAuth";
 import type { Course, Category } from "../types/cours";
-import { fetchCourses } from "../services/cours";
+import { createCourse, fetchCourses } from "../services/cours";
+import CartCours from "../components/CartCours";
 
 function TeacherDashboard() {
-  const { accessToken, setAccessToken, setUser, handleAuthError, user } =
-    useAuth();
+  const { accessToken, setAccessToken, setUser, handleAuthError, user } = useAuth() ; 
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -17,36 +17,7 @@ function TeacherDashboard() {
     category_id: "",
   });
 
-  const categories: Category[] = [
-    { id: 1, name: "Development" },
-    { id: 2, name: "Design" },
-    { id: 3, name: "Marketing" },
-    { id: 4, name: "Business" },
-  ];
-
-    // console.log(user);
-
-  useEffect(() => {
-    const coursesFetch = async () => {
-      try {
-        const response = await fetchCourses(
-          accessToken,
-          setAccessToken,
-          handleAuthError,
-          setUser,
-        );
-
-        console.log(response.courses); // Debugging line
-        setCourses(response.courses);
-      } catch (error) {
-        console.error("Failed to fetch courses:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    coursesFetch();
-  }, []);
+  const categories: Category[] = [{ id: 3, name: "Marketing" }];
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -59,11 +30,70 @@ function TeacherDashboard() {
     }));
   };
 
-  const handleCreateCourse = (e: React.FormEvent) => {
+  const coursesFetch = async () => {
+    try {
+      const response = await fetchCourses(
+        accessToken,
+        setAccessToken,
+        handleAuthError,
+        setUser,
+      );
+      console.log(response);
+
+      setCourses(response.courses);
+    } catch (error) {
+      console.error("Failed to fetch courses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateCourse = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      !formData.title ||
+      !formData.description ||
+      !formData.price ||
+      !formData.category_id
+    ) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    if (isNaN(Number(formData.price)) || Number(formData.price) < 0) {
+      alert("Please enter a valid price.");
+      return;
+    }
+
+    if (isNaN(Number(formData.category_id))) {
+      alert("Please select a valid category.");
+      return;
+    }
+
+    try {
+      const courseData = await createCourse(
+        accessToken,
+        setAccessToken,
+        handleAuthError,
+        setUser,
+        formData,
+      );
+
+      coursesFetch();
+
+    } catch (error) {
+      console.error("Failed to create course:", error);
+      alert("Failed to create course. Please try again.");
+      return;
+    }
 
     setShowForm(false);
   };
+
+  useEffect(() => {
+    coursesFetch();
+  }, []);
 
   return (
     <>
@@ -193,68 +223,7 @@ function TeacherDashboard() {
         )}
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className="bg-white rounded-2xl shadow-md p-6 border hover:shadow-lg transition"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-semibold text-gray-800">
-                    {course.title}
-                  </h2>
-                  <p className="text-sm text-blue-600 mt-1 font-medium">
-                    {course.category_name}
-                  </p>
-                </div>
-
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  ${course.price}
-                </span>
-              </div>
-
-              <p className="text-gray-600 mt-4">{course.description}</p>
-
-              <div className="mt-5">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-gray-800">
-                    Groups 
-                  </h3>
-                </div>
-
-                <div className="space-y-3">
-                  {/* {course.groups.map((group) => (
-                    <div
-                      key={group.id}
-                      className="bg-gray-50 rounded-xl p-3 border"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-gray-700">
-                          {group.name}
-                        </span>
-                        <span className="text-sm text-gray-600">
-                          {group.progress}%
-                        </span>
-                      </div>
-
-                      <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                        <div
-                          className="bg-blue-600 h-3 rounded-full"
-                          style={{ width: `${group.progress}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))} */}
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end">
-                <button className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
-                  Details
-                </button>
-              </div>
-            </div>
-          ))}
+          {courses.map((course) => <CartCours key={course.id} course={course} />)}
         </section>
       </main>
     </>
