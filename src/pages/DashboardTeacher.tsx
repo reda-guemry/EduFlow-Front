@@ -3,32 +3,22 @@ import { useAuth } from "../customhook/useAuth";
 import type { Course, Category } from "../types/cours";
 import { createCourse, fetchCourses } from "../services/cours";
 import CartCours from "../components/CartCours";
+import CourseFormModal from "../components/CourseFormModal";
 
 function TeacherDashboard() {
-  const { accessToken, setAccessToken, setUser, handleAuthError, user } = useAuth() ; 
+  const { accessToken, setAccessToken, setUser, handleAuthError, user } =
+    useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-
-  const [formData, setFormData] = useState({
+  const [formdata, setFormData] = useState({
     title: "",
     description: "",
-    price: "",
-    category_id: "",
+    price: 0,
+    category_id: 0,
   });
 
   const categories: Category[] = [{ id: 3, name: "Marketing" }];
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   const coursesFetch = async () => {
     try {
@@ -48,48 +38,31 @@ function TeacherDashboard() {
     }
   };
 
-  const handleCreateCourse = async (e: React.FormEvent) => {
+  const handleCreateCourse = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (
-      !formData.title ||
-      !formData.description ||
-      !formData.price ||
-      !formData.category_id
-    ) {
-      alert("Please fill in all fields.");
-      return;
-    }
-
-    if (isNaN(Number(formData.price)) || Number(formData.price) < 0) {
-      alert("Please enter a valid price.");
-      return;
-    }
-
-    if (isNaN(Number(formData.category_id))) {
-      alert("Please select a valid category.");
-      return;
-    }
-
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
+      price: Number(formData.get("price")),
+      category_id: Number(formData.get("category_id")),
+    };
+    
     try {
-      const courseData = await createCourse(
-        accessToken,
-        setAccessToken,
-        handleAuthError,
-        setUser,
-        formData,
-      );
-
-      coursesFetch();
-
+        const newCourse = await createCourse(
+            accessToken,
+            setAccessToken,
+            handleAuthError,
+            setUser,
+            data,
+        );
+        setCourses(prev => [...prev, newCourse]);
+        setShowForm(false);
     } catch (error) {
-      console.error("Failed to create course:", error);
-      alert("Failed to create course. Please try again.");
-      return;
+        console.error("Failed to create course:", error);
     }
-
-    setShowForm(false);
-  };
+  }
 
   useEffect(() => {
     coursesFetch();
@@ -116,114 +89,12 @@ function TeacherDashboard() {
           </button>
         </div>
 
-        {showForm && (
-          <div className="mb-8 bg-white rounded-2xl shadow-md p-6 border">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-800">
-                Create New Course
-              </h2>
-              <button
-                onClick={() => setShowForm(false)}
-                className="text-gray-500 hover:text-red-500 text-lg font-bold"
-              >
-                ✕
-              </button>
-            </div>
-
-            <form
-              onSubmit={handleCreateCourse}
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            >
-              <div className="md:col-span-1">
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  required
-                  maxLength={255}
-                  className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter course title"
-                />
-              </div>
-
-              <div className="md:col-span-1">
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  Price
-                </label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  min="0"
-                  step="0.01"
-                  className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter course price"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  rows={4}
-                  className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter course description"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  Category
-                </label>
-                <select
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleChange}
-                  required
-                  className="w-full border rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="md:col-span-2 flex justify-end gap-3 mt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
-                >
-                  Save Course
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
+        <CourseFormModal isOpen={showForm} onClose={() => setShowForm(false)} formdata={formdata} categories={categories} onSubmit={handleCreateCourse} setFormData={setFormData} />
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {courses.map((course) => <CartCours key={course.id} course={course} />)}
+          {courses.map((course) => (
+            <CartCours key={course.id} course={course} />
+          ))}
         </section>
       </main>
     </>
