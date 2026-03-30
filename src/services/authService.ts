@@ -1,4 +1,4 @@
-import type { LoginData, RegisterData, responseAuth } from "../types/auth";
+import type { AuthRefresh, LoginData, RegisterData, responseAuth } from "../types/auth";
 import { api } from "./api";
 
 export async function login(data: LoginData): Promise<responseAuth> {
@@ -23,7 +23,10 @@ export async function register(data: RegisterData): Promise<responseAuth> {
 
 
 export async function refreshAccessToken() {
-    return api<string>('refresh-token', {
+    return api<AuthRefresh>('refresh', {
         method: "POST",
+        headers: {
+            "Accept": "application/json",
+        },
     } , () => {});
 }

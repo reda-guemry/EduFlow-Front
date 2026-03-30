@@ -1,12 +1,13 @@
 import type { ApiOptions } from "../types/apiOption";
 import { ApiError } from "../types/eureur";
 import { refreshAccessToken } from "./authService";
+import type { User } from "../types/auth";
 
 
 
 
 
-export async function api<T>(endpoint: string, options: ApiOptions = {}, setAccessToken: (token: string | null) => void): Promise<T> {
+export async function api<T>(endpoint: string, options: ApiOptions = {}, setAccessToken: (token: string | null) => void, setUser: (user: User | null) => void = () => { }): Promise<T> {
     const {
         method = "GET",
         accessToken = null,
@@ -14,6 +15,8 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
         headers = {},
         retry = false,
     } = options;
+
+    // console.log('wa anaa' + accessToken)
 
     const response = await fetch(`http://localhost:8000/api/${endpoint}`, {
         method,
@@ -29,24 +32,28 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
     const data = await response.json().catch(() => null);
 
     if (response.ok) {
-        return data as T ;
+        return data as T;
     }
 
-    if (!retry && response.status === 401 && endpoint !== 'refresh-token' && setAccessToken) {
+    if (!retry && response.status === 401 && endpoint !== 'refresh' && setAccessToken) {
 
         try {
-            const newaccesToken = await refreshAccessToken();
+            const responseRefresh = await refreshAccessToken();
+            console.log(responseRefresh);
 
-            if(!newaccesToken) {
-                throw new ApiError('Unauthenticated' , 401, null);
+            if (!responseRefresh.token) {
+                throw new ApiError('Unauthenticated', 401, null);
             }
-            setAccessToken(newaccesToken);
+            
+            setAccessToken(responseRefresh.token);
+            setUser(responseRefresh.user);
 
-            return api<T>(endpoint, { ...options, accessToken: newaccesToken, retry: true }, setAccessToken);
+            return api<T>(endpoint, { ...options, accessToken: responseRefresh.token, retry: true }, setAccessToken, setUser);
 
-        }catch (error) {
+        } catch (error) {
             setAccessToken(null);
-            throw error ;  
+            setUser(null);
+            throw error;
         }
 
     }
@@ -58,19 +65,20 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
 
 
 export async function apiCall<T>(
-  endpoint: string ,
-  options: ApiOptions = {},
-  setAccessToken: (token: string | null) => void ,
-  onUnauthorized: () => void
+    endpoint: string,
+    options: ApiOptions = {},
+    setAccessToken: (token: string | null) => void,
+    setUser: (user: User | null) => void,
+    onUnauthorized: () => void
 ): Promise<T> {
-  try {
-    return await api<T>(endpoint, options, setAccessToken);
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 401) {
-      onUnauthorized();
+    try {
+        return await api<T>(endpoint, options, setAccessToken, setUser);
+    } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+            onUnauthorized();
+        }
+        throw error;
     }
-    throw error;
-  }
 }
 
 

@@ -21,4 +21,6 @@ export type Category = {
 };
 
 
-export type TeacherCoursesResponse = Course[];
+export type TeacherCoursesResponse = {
+    courses: Course[];
+};

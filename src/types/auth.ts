@@ -13,7 +13,12 @@ export type AuthContextType = {
     user : User | null ; 
     setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
-    
+
+}
+export type AuthRefresh = {
+    message: string;
+    token: string;
+    user: User;
 }
 
 export type LoginData = {

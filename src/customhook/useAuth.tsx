@@ -17,8 +17,10 @@ export const useAuth = () => {
   const handleAuthError = () => {
     setAccessToken(null);
     setUser(null);
+    // console.log("Authentication error: Access token cleared and user set to null.");
     navigate("/login");
   };
+  
 
   return {
     ...rest,

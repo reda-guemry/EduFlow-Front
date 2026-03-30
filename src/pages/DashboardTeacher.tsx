@@ -4,46 +4,10 @@ import type { Course, Category } from "../types/cours";
 import { fetchCourses } from "../services/cours";
 
 function TeacherDashboard() {
-
-  const { accessToken, setAccessToken ,  handleAuthError } = useAuth();
-    
-  console.log(accessToken); 
-
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const coursesFetch = async () => {
-      try {
-        const response = await fetchCourses(
-          accessToken,
-          setAccessToken,
-          handleAuthError , 
-        );
-
-        setCourses(response);
-
-      } catch (error) {
-        console.error("Failed to fetch courses:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    coursesFetch();
-
-
-  }, [accessToken, setAccessToken, handleAuthError]);
-
-  const categories: Category[] = [
-    { id: 1, name: "Development" },
-    { id: 2, name: "Design" },
-    { id: 3, name: "Marketing" },
-    { id: 4, name: "Business" },
-  ];
-
+  const { accessToken, setAccessToken, setUser, handleAuthError, user } =
+    useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
-
+  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -52,6 +16,37 @@ function TeacherDashboard() {
     price: "",
     category_id: "",
   });
+
+  const categories: Category[] = [
+    { id: 1, name: "Development" },
+    { id: 2, name: "Design" },
+    { id: 3, name: "Marketing" },
+    { id: 4, name: "Business" },
+  ];
+
+    // console.log(user);
+
+  useEffect(() => {
+    const coursesFetch = async () => {
+      try {
+        const response = await fetchCourses(
+          accessToken,
+          setAccessToken,
+          handleAuthError,
+          setUser,
+        );
+
+        console.log(response.courses); // Debugging line
+        setCourses(response.courses);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    coursesFetch();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -223,12 +218,12 @@ function TeacherDashboard() {
               <div className="mt-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-gray-800">
-                    Groups ({course.groups.length})
+                    Groups 
                   </h3>
                 </div>
 
                 <div className="space-y-3">
-                  {course.groups.map((group) => (
+                  {/* {course.groups.map((group) => (
                     <div
                       key={group.id}
                       className="bg-gray-50 rounded-xl p-3 border"
@@ -249,7 +244,7 @@ function TeacherDashboard() {
                         />
                       </div>
                     </div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
 

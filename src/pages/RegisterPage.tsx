@@ -40,8 +40,6 @@ function RegisterPage() {
         navigate('/student/dashboard') ;
       }else if(result.data.user.role === 'teacher') {
         navigate('/teacher/dashboard') ;
-      }else {
-        navigate('/') ;
       }
 
     } catch (error) {
