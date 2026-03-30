@@ -14,7 +14,7 @@ function RegisterPage() {
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState<UserRole>("student");
 
-  const {setAccessToken , setUser , accessToken } = useAuth() ;
+  const {setAccessToken , setUser , navigate } = useAuth() ;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -35,9 +35,14 @@ function RegisterPage() {
 
       setAccessToken(result.data.token) ;
       setUser(result.data.user) ;
-      
-      window.location.href = "/login" ;
 
+      if(result.data.user.role === 'student') {
+        navigate('/student/dashboard') ;
+      }else if(result.data.user.role === 'teacher') {
+        navigate('/teacher/dashboard') ;
+      }else {
+        navigate('/') ;
+      }
 
     } catch (error) {
       if (error instanceof Error) {

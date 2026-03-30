@@ -5,34 +5,39 @@ import { login } from "../services/authService";
 import { useAuth } from "../customhook/useAuth";
 
 function LoginPage() {
-    const [ password , setPassword ] = useState<string>('') ;
-    const [email , setEmail] = useState<string>('') ; 
-    const { setAccessToken , setUser } = useAuth() ;
-    
-    async function handleSubmit(event : React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        const loginData: LoginData = { email, password };
+  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const { setAccessToken, setUser, navigate } = useAuth();
 
-        // console.log('Login data : ', loginData);
-        
-        try {
-            const result = await login(loginData) ;  
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const loginData: LoginData = { email, password };
 
-            setAccessToken(result.data.token) ;
-            setUser(result.data.user) ;
+    // console.log('Login data : ', loginData);
 
-            window.location.href = "/dashboard" ;
-            
-        }catch(error) {
-            if (error instanceof Error) {
-                console.log("Login error : ", error.message);
-            } else {
-                console.error("Unexpected error : ", error);
-            }
-        }
+    try {
+      const result = await login(loginData);
+
+      setAccessToken(result.data.token);
+      setUser(result.data.user);
+
+      if (result.data.user.role === "student") {
+        navigate("/student/dashboard");
+      } else if (result.data.user.role === "teacher") {
+        navigate("/teacher/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("Login error : ", error.message);
+      } else {
+        console.error("Unexpected error : ", error);
+      }
     }
-  
-    return (
+  }
+
+  return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">

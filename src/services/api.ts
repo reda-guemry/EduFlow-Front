@@ -58,9 +58,9 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
 
 
 export async function apiCall<T>(
-  endpoint: string,
+  endpoint: string ,
   options: ApiOptions = {},
-  setAccessToken: (token: string | null) => void,
+  setAccessToken: (token: string | null) => void ,
   onUnauthorized: () => void
 ): Promise<T> {
   try {
