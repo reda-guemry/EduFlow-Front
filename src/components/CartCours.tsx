@@ -1,6 +1,6 @@
-import type { Course } from "../types/cours";
+import type { CourseCardProps } from "../types/cours";
 
-function CartCours({ course }: { course: Course }) {
+function CartCours({ course , setModalMode, setSelectedCourse, setShowForm }: CourseCardProps) {
   return (
     <>
       <div
@@ -12,6 +12,7 @@ function CartCours({ course }: { course: Course }) {
             <h2 className="text-2xl font-semibold text-gray-800">
               {course.title}
             </h2>
+
             <p className="text-sm text-blue-600 mt-1 font-medium">
               {course.category_name}
             </p>
@@ -20,6 +21,17 @@ function CartCours({ course }: { course: Course }) {
           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
             ${course.price}
           </span>
+
+          <button
+              onClick={() => {
+                setModalMode("edit");
+                setSelectedCourse(course);
+                setShowForm(true);
+              }}
+              className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition text-sm font-medium"
+            >
+              Edit
+            </button>
         </div>
 
         <p className="text-gray-600 mt-4">{course.description}</p>

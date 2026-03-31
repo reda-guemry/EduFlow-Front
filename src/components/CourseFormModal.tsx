@@ -1,36 +1,75 @@
-import type { Category } from "../types/cours";
+import { use, useEffect } from "react";
+import type { Category, CourseFormData } from "../types/cours";
 
 type CourseFormModalProps = {
   isOpen: boolean;
   onClose: () => void;
 
-  formdata: {
-    title: string;
-    description: string;
-    price: number;
-    category_id: number;
-  };
+  formdata: CourseFormData;
 
   categories: Category[];
 
-  onSubmit : (e: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 
-  setFormData?: React.Dispatch<React.SetStateAction<{
-    title: string;
-    description: string;
-    price: number;
-    category_id: number;
-  }>>;
+  setFormData?: React.Dispatch<
+    React.SetStateAction<{
+      title: string;
+      description: string;
+      price: number;
+      category_id: number;
+    }>
+  >;
+
+  mode?: "create" | "edit";
+
+  initialData?: Partial<CourseFormData>;
 };
 
-function CourseFormModal({ isOpen, onClose , formdata , categories , onSubmit, setFormData }: CourseFormModalProps) {
+function CourseFormModal({
+  isOpen,
+  onClose,
+  formdata,
+  categories,
+  onSubmit,
+  setFormData,
+  mode = "create",
+  initialData,
+}: CourseFormModalProps) {
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // console.log("CourseFormModal opened with mode:", mode, "and initialData:", initialData);
+
+    if (mode === "edit" && initialData) {
+        setFormData && setFormData((prev) => ({
+            ...prev,
+            title: initialData.title ?? "",
+            description: initialData.description ?? "",
+            price: initialData.price ?? 0,
+            category_id: initialData.category_id ?? 0,
+        }));
+    }
+
+    if (mode === "create") {
+        setFormData && setFormData(() => ({
+            title : '', 
+            description : '' , 
+            price: 0 , 
+            category_id: 0
+        })) ; 
+    }
+  }, [isOpen, mode, initialData]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white p-6 rounded-xl w-full max-w-lg">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Create Course</h2>
+          <h2 className="text-xl font-bold">Course
+            {mode === "create" ? "Create Course" : "Edit Course"}
+          </h2>
           <button onClick={onClose}>X</button>
         </div>
 
@@ -38,7 +77,10 @@ function CourseFormModal({ isOpen, onClose , formdata , categories , onSubmit, s
           <input
             type="text"
             value={formdata.title}
-            onChange={(e) => setFormData && setFormData((prev) => ({ ...prev, title: e.target.value }))}
+            onChange={(e) =>
+              setFormData &&
+              setFormData((prev) => ({ ...prev, title: e.target.value }))
+            }
             name="title"
             placeholder="Course title"
             className="w-full border p-2 rounded mb-3"
@@ -46,7 +88,10 @@ function CourseFormModal({ isOpen, onClose , formdata , categories , onSubmit, s
 
           <textarea
             value={formdata.description}
-            onChange={(e) => setFormData && setFormData((prev) => ({ ...prev, description: e.target.value }))}
+            onChange={(e) =>
+              setFormData &&
+              setFormData((prev) => ({ ...prev, description: e.target.value }))
+            }
             name="description"
             placeholder="Course description"
             className="w-full border p-2 rounded mb-3"
@@ -55,7 +100,13 @@ function CourseFormModal({ isOpen, onClose , formdata , categories , onSubmit, s
           <input
             type="number"
             value={formdata.price}
-            onChange={(e) => setFormData && setFormData((prev) => ({ ...prev, price: Number(e.target.value) }))}
+            onChange={(e) =>
+              setFormData &&
+              setFormData((prev) => ({
+                ...prev,
+                price: Number(e.target.value),
+              }))
+            }
             name="price"
             placeholder="Course price"
             className="w-full border p-2 rounded mb-3"
@@ -63,7 +114,13 @@ function CourseFormModal({ isOpen, onClose , formdata , categories , onSubmit, s
 
           <select
             value={formdata.category_id}
-            onChange={(e) => setFormData && setFormData((prev) => ({ ...prev, category_id: Number(e.target.value) }))}
+            onChange={(e) =>
+              setFormData &&
+              setFormData((prev) => ({
+                ...prev,
+                category_id: Number(e.target.value),
+              }))
+            }
             name="category_id"
             className="w-full border p-2 rounded mb-3"
           >
@@ -88,7 +145,7 @@ function CourseFormModal({ isOpen, onClose , formdata , categories , onSubmit, s
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded"
             >
-              Save
+              {mode === "create" ? "Create" : "Save"}
             </button>
           </div>
         </form>

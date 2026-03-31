@@ -31,7 +31,7 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
 
     const data = await response.json().catch(() => null);
 
-    console.log('response : ', data);
+    // console.log('response : ', data);
 
     if (response.ok) {
         return data as T;
@@ -41,7 +41,7 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
 
         try {
             const responseRefresh = await refreshAccessToken();
-            console.log(responseRefresh);
+            // console.log(responseRefresh);
 
             if (!responseRefresh.token) {
                 throw new ApiError('Unauthenticated', 401, null);

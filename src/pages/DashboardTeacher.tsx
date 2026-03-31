@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../customhook/useAuth";
-import type { Course, Category } from "../types/cours";
+import type { Course, Category, CourseFormData } from "../types/cours";
 import { createCourse, fetchCourses } from "../services/cours";
 import CartCours from "../components/CartCours";
 import CourseFormModal from "../components/CourseFormModal";
@@ -11,6 +11,10 @@ function TeacherDashboard() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [formMode, setFormMode] = useState<"create" | "edit">("create");
+  const [selectedCourse, setSelectedCourse] = useState<CourseFormData | null>(
+    null,
+  );
   const [formdata, setFormData] = useState({
     title: "",
     description: "",
@@ -28,7 +32,7 @@ function TeacherDashboard() {
         handleAuthError,
         setUser,
       );
-      console.log(response);
+    //   console.log(response);
 
       setCourses(response.courses);
     } catch (error) {
@@ -40,7 +44,7 @@ function TeacherDashboard() {
 
   const handleCreateCourse = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const formData = new FormData(e.currentTarget);
     const data = {
       title: formData.get("title") as string,
@@ -48,21 +52,27 @@ function TeacherDashboard() {
       price: Number(formData.get("price")),
       category_id: Number(formData.get("category_id")),
     };
-    
+
     try {
-        const newCourse = await createCourse(
-            accessToken,
-            setAccessToken,
-            handleAuthError,
-            setUser,
-            data,
-        );
-        setCourses(prev => [...prev, newCourse]);
-        setShowForm(false);
+      const newCourse = await createCourse(
+        accessToken,
+        setAccessToken,
+        handleAuthError,
+        setUser,
+        data,
+      );
+      setCourses((prev) => [...prev, newCourse]);
+      setShowForm(false);
     } catch (error) {
-        console.error("Failed to create course:", error);
+      console.error("Failed to create course:", error);
     }
-  }
+  };
+
+  const handleUpdateCourse = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.log("update course : ", selectedCourse);
+  };
 
   useEffect(() => {
     coursesFetch();
@@ -82,19 +92,46 @@ function TeacherDashboard() {
           </div>
 
           <button
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setFormMode("create");
+              setSelectedCourse(null);
+              setShowForm(true);
+            }}
             className="bg-blue-600 text-white px-5 py-3 rounded-lg hover:bg-blue-700 transition"
           >
             + Create Course
           </button>
         </div>
 
-        <CourseFormModal isOpen={showForm} onClose={() => setShowForm(false)} formdata={formdata} categories={categories} onSubmit={handleCreateCourse} setFormData={setFormData} />
+        <CourseFormModal
+          isOpen={showForm}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedCourse(null);
+          }}
+          formdata={formdata}
+          categories={categories}
+          onSubmit={formMode === "create" ? handleCreateCourse : handleUpdateCourse}
+          setFormData={setFormData}
+          mode={formMode}
+          initialData={selectedCourse || undefined}
+
+        />
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {courses.map((course) => (
-            <CartCours key={course.id} course={course} />
-          ))}
+          {loading ? (
+            <p>Loading courses...</p>
+          ) : (
+            courses.map((course) => (
+              <CartCours
+                key={course.id}
+                course={course}
+                setModalMode={setFormMode}
+                setSelectedCourse={setSelectedCourse}
+                setShowForm={setShowForm}
+              />
+            ))
+          )}
         </section>
       </main>
     </>
