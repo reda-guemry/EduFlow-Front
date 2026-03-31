@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../customhook/useAuth";
 import type { Course, Category, CourseFormData } from "../types/cours";
-import { createCourse, fetchCourses } from "../services/cours";
+import { createCourse, fetchCourses, updateCourse , deleteCourse } from "../services/cours";
 import CartCours from "../components/CartCours";
 import CourseFormModal from "../components/CourseFormModal";
 
 function TeacherDashboard() {
-  const { accessToken, setAccessToken, setUser, handleAuthError, user } =
+  const { accessToken, setAccessToken, setUser, handleAuthError } =
     useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,9 @@ function TeacherDashboard() {
         setUser,
         data,
       );
+
       setCourses((prev) => [...prev, newCourse]);
+    //   coursesFetch() ; 
       setShowForm(false);
     } catch (error) {
       console.error("Failed to create course:", error);
@@ -71,12 +73,54 @@ function TeacherDashboard() {
   const handleUpdateCourse = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("update course : ", selectedCourse);
+    // console.log(selectedCourse);
+    // return ; 
+
+    if (!selectedCourse) return;
+
+    try {
+        await updateCourse(
+            accessToken,
+            setAccessToken,
+            handleAuthError,
+            setUser,
+            selectedCourse.id!,
+            formdata,
+        );
+    } catch (error) {
+        console.error("Failed to update course:", error);
+    } finally {
+        setShowForm(false);
+        setSelectedCourse(null);
+        // coursesFetch();
+    }
   };
+
+  const handleDeleteCourse = async (courseId: number) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this course?");
+    if (!confirmDelete) return;
+
+    try {
+        await deleteCourse(
+            accessToken,
+            setAccessToken,
+            handleAuthError,
+            setUser,
+            courseId,
+        );
+
+    } catch (error) {
+        console.error("Failed to delete course:", error);
+    }
+
+
+  }
+
 
   useEffect(() => {
     coursesFetch();
-  }, []);
+  }, [handleUpdateCourse , handleCreateCourse , deleteCourse]) ;
+
 
   return (
     <>
@@ -129,6 +173,7 @@ function TeacherDashboard() {
                 setModalMode={setFormMode}
                 setSelectedCourse={setSelectedCourse}
                 setShowForm={setShowForm}
+                handleDeleteCourse={handleDeleteCourse}
               />
             ))
           )}

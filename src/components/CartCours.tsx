@@ -1,6 +1,6 @@
 import type { CourseCardProps } from "../types/cours";
 
-function CartCours({ course , setModalMode, setSelectedCourse, setShowForm }: CourseCardProps) {
+function CartCours({ course , setModalMode, setSelectedCourse, setShowForm , handleDeleteCourse }: CourseCardProps) {
   return (
     <>
       <div
@@ -22,6 +22,9 @@ function CartCours({ course , setModalMode, setSelectedCourse, setShowForm }: Co
             ${course.price}
           </span>
 
+
+            <div className="flex gap-3">
+
           <button
               onClick={() => {
                 setModalMode("edit");
@@ -32,6 +35,15 @@ function CartCours({ course , setModalMode, setSelectedCourse, setShowForm }: Co
             >
               Edit
             </button>
+
+            <button
+              onClick={() => handleDeleteCourse(course.id)}
+              className="cursor-pointer bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-sm font-medium"
+            >
+              Delete
+            </button>
+            </div>
+
         </div>
 
         <p className="text-gray-600 mt-4">{course.description}</p>

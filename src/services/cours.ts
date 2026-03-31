@@ -49,3 +49,46 @@ export async function createCourse(
     )
 }
 
+
+export async function updateCourse(
+    accessToken: string | null,
+    setAccessToken: (token: string | null) => void,
+    onUnauthorized: () => void,
+    setUser: (user: User | null) => void,
+    courseId: number,
+    data: {},
+): Promise<Course> {
+    return apiCall<Course>(`courses/${courseId}`, {
+        method: "PUT",
+        accessToken: accessToken,
+        headers: {
+            "Accept": "application/json",
+        },
+        body: data,
+    },
+    setAccessToken ,
+    setUser, 
+    onUnauthorized ,
+    )
+}
+
+export async function deleteCourse(
+    accessToken: string | null,
+    setAccessToken: (token: string | null) => void,
+    onUnauthorized: () => void,
+    setUser: (user: User | null) => void,
+    courseId: number,
+): Promise<void> {
+    return apiCall<void>(`courses/${courseId}`, {
+        method: "DELETE",
+        accessToken: accessToken,
+        headers: {
+            "Accept": "application/json",
+        },
+    },
+    setAccessToken ,
+    setUser, 
+    onUnauthorized ,
+    )
+}
+
