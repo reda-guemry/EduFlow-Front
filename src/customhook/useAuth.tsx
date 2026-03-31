@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import type { AuthContextType } from "../types/auth";
-import { AuthContext } from "../context/context";
+import { AuthContext } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {

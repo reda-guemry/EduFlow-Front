@@ -30,3 +30,24 @@ export async function refreshAccessToken() {
         },
     } , () => {});
 }
+
+export async function logout(
+    setAccessToken: (token: string | null) => void,
+    setUser: (user: any) => void, 
+    navigate: (path: string) => void
+){
+    try {
+        await api('logout', {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+            },
+        } , () => {});
+    } catch (error) {
+        console.error("Logout failed:", error);
+    } finally {
+        setAccessToken(null);
+        setUser(null);
+        navigate("/login");
+    }
+}

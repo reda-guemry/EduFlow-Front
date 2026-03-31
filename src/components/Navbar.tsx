@@ -1,5 +1,14 @@
+import { useAuth } from "../customhook/useAuth";
+import { logout } from "../services/authService";
 
 function Navbar() {
+
+    const { setAccessToken, setUser, navigate } = useAuth();
+    
+     const handleLogout = () => {
+        logout(setAccessToken, setUser, navigate);
+     };
+
   return (
     <nav className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -11,12 +20,16 @@ function Navbar() {
           <button className="hover:text-blue-600 transition">Dashboard</button>
           <button className="hover:text-blue-600 transition">My Courses</button>
           <button className="hover:text-blue-600 transition">Students</button>
-          <button className="hover:text-red-600 transition">Logout</button>
+          <button
+            className="hover:text-red-600 transition"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
       </div>
     </nav>
   );
 }
 
-
-export default Navbar ;
+export default Navbar;
