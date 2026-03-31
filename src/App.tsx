@@ -15,14 +15,22 @@ function App() {
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
           <Route path="/" element={<LoginPage />}></Route>
-          <Route
-            path="/student/dashboard"
-            element={<DashboardStudent />}
-          ></Route>
-          <Route
-            path="/teacher/dashboard"
-            element={<DashboardTeacher />}
-          ></Route>
+
+          <Route >
+
+
+            <Route
+              path="/student/dashboard"
+              element={<DashboardStudent />}
+            ></Route>
+
+            <Route
+              path="/teacher/dashboard"
+              element={<DashboardTeacher />}
+            ></Route>
+
+
+          </Route>
         </Routes>
         <Footer />
       </div>

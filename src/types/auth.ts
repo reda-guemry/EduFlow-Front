@@ -11,10 +11,12 @@ export interface User {
 export type AuthContextType = {
     accessToken: string | null;
     user : User | null ; 
+    authLoading: boolean;
     setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
-
+    setAuthLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 export type AuthRefresh = {
     message: string;
     token: string;

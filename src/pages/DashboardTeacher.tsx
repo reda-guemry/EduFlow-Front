@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../customhook/useAuth";
 import type { Course, Category, CourseFormData } from "../types/cours";
-import { createCourse, fetchCourses, updateCourse , deleteCourse } from "../services/cours";
+import {
+  createCourse,
+  fetchCourses,
+  updateCourse,
+  deleteCourse,
+} from "../services/cours";
 import CartCours from "../components/CartCours";
 import CourseFormModal from "../components/CourseFormModal";
 
 function TeacherDashboard() {
-  const { accessToken, setAccessToken, setUser, handleAuthError } =
-    useAuth();
+  const { accessToken, setAccessToken, setUser, handleAuthError } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -32,7 +36,7 @@ function TeacherDashboard() {
         handleAuthError,
         setUser,
       );
-    //   console.log(response);
+      //   console.log(response);
 
       setCourses(response.courses);
     } catch (error) {
@@ -63,7 +67,7 @@ function TeacherDashboard() {
       );
 
       setCourses((prev) => [...prev, newCourse]);
-    //   coursesFetch() ; 
+      coursesFetch();
       setShowForm(false);
     } catch (error) {
       console.error("Failed to create course:", error);
@@ -74,53 +78,51 @@ function TeacherDashboard() {
     e.preventDefault();
 
     // console.log(selectedCourse);
-    // return ; 
+    // return ;
 
     if (!selectedCourse) return;
 
     try {
-        await updateCourse(
-            accessToken,
-            setAccessToken,
-            handleAuthError,
-            setUser,
-            selectedCourse.id!,
-            formdata,
-        );
+      await updateCourse(
+        accessToken,
+        setAccessToken,
+        handleAuthError,
+        setUser,
+        selectedCourse.id!,
+        formdata,
+      );
     } catch (error) {
-        console.error("Failed to update course:", error);
+      console.error("Failed to update course:", error);
     } finally {
-        setShowForm(false);
-        setSelectedCourse(null);
-        // coursesFetch();
+      setShowForm(false);
+      setSelectedCourse(null);
+      coursesFetch();
     }
   };
 
   const handleDeleteCourse = async (courseId: number) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this course?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this course?",
+    );
     if (!confirmDelete) return;
 
     try {
-        await deleteCourse(
-            accessToken,
-            setAccessToken,
-            handleAuthError,
-            setUser,
-            courseId,
-        );
-
+      await deleteCourse(
+        accessToken,
+        setAccessToken,
+        handleAuthError,
+        setUser,
+        courseId,
+      );
+      coursesFetch();
     } catch (error) {
-        console.error("Failed to delete course:", error);
+      console.error("Failed to delete course:", error);
     }
-
-
-  }
-
+  };
 
   useEffect(() => {
     coursesFetch();
-  }, [handleUpdateCourse , handleCreateCourse , deleteCourse]) ;
-
+  }, []);
 
   return (
     <>
@@ -155,11 +157,12 @@ function TeacherDashboard() {
           }}
           formdata={formdata}
           categories={categories}
-          onSubmit={formMode === "create" ? handleCreateCourse : handleUpdateCourse}
+          onSubmit={
+            formMode === "create" ? handleCreateCourse : handleUpdateCourse
+          }
           setFormData={setFormData}
           mode={formMode}
           initialData={selectedCourse || undefined}
-
         />
 
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
