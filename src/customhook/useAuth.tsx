@@ -1,18 +1,16 @@
 import { useContext } from "react";
-import type { AuthContextType } from "../types/auth";
+// import type { AuthContextType } from "../types/auth";
 import { AuthContext } from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  const navigate = useNavigate() ;
   // console.log('useAuth context: ', context); // Debugging line
 
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
 
-  const { setAccessToken, setUser , ...rest } = context;
+  const { setAccessToken, setUser , navigate ,  ...rest } = context;
 
   const handleAuthError = () => {
     setAccessToken(null);
@@ -26,8 +24,8 @@ export const useAuth = () => {
     ...rest,
     setAccessToken,
     setUser,
-    handleAuthError,
-    navigate , 
+    handleAuthError, 
+    navigate,
   };
 
 };

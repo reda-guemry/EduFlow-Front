@@ -4,7 +4,7 @@ import { apiCall } from "./api";
 
 
 
-export async function fetchCourses(
+export async function fetchCoursesByTeacher(
 
     accesToken: string | null,
     setAccessToken: (token: string | null) => void,
@@ -92,3 +92,23 @@ export async function deleteCourse(
     )
 }
 
+
+
+export async function fetchCourses(
+    accessToken: string | null,
+    setAccessToken: (token: string | null) => void,
+    onUnauthorized: () => void,
+    setUser: (user: User | null) => void
+){
+    return apiCall<Course[]>('courses', {
+        method: "GET",
+        accessToken: accessToken,
+        headers: {
+            "Accept": "application/json",
+        },
+    },
+    setAccessToken ,
+    setUser, 
+    onUnauthorized ,
+    );
+}

@@ -3,9 +3,9 @@ import { useAuth } from "../customhook/useAuth";
 import type { Course, Category, CourseFormData } from "../types/cours";
 import {
   createCourse,
-  fetchCourses,
   updateCourse,
   deleteCourse,
+  fetchCoursesByTeacher,
 } from "../services/cours";
 import CartCours from "../components/CartCours";
 import CourseFormModal from "../components/CourseFormModal";
@@ -30,7 +30,7 @@ function TeacherDashboard() {
 
   const coursesFetch = async () => {
     try {
-      const response = await fetchCourses(
+      const response = await fetchCoursesByTeacher(
         accessToken,
         setAccessToken,
         handleAuthError,

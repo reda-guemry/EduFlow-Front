@@ -5,6 +5,8 @@ import DashboardStudent from "./pages/DashboardStudent";
 import DashboardTeacher from "./pages/DashboardTeacher";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import CheckRoleNavigate from "./components/CheckRoleNavigate";
 
 function App() {
   return (
@@ -12,12 +14,15 @@ function App() {
       <div className="min-h-screen bg-gray-100 flex flex-col">
         <Navbar />
         <Routes>
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/register" element={<RegisterPage />}></Route>
-          <Route path="/" element={<LoginPage />}></Route>
+          
+          <Route path="/" element={<CheckRoleNavigate />}>
+            <Route path="/login" element={<LoginPage />}></Route>
+            <Route path="/register" element={<RegisterPage />}></Route>
+          </Route>
 
-          <Route >
-
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<CheckRoleNavigate />}></Route>
+            <Route path="/" element={<LoginPage />}></Route>
 
             <Route
               path="/student/dashboard"
@@ -28,8 +33,6 @@ function App() {
               path="/teacher/dashboard"
               element={<DashboardTeacher />}
             ></Route>
-
-
           </Route>
         </Routes>
         <Footer />

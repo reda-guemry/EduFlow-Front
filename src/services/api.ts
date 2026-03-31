@@ -1,10 +1,11 @@
 import type { ApiOptions } from "../types/apiOption";
 import { ApiError } from "../types/eureur";
 import { refreshAccessToken } from "./authService";
-import type { User } from "../types/auth";
+import type { AuthRefresh, User } from "../types/auth";
 
 
 
+let refreshPromise: Promise<AuthRefresh> | null = null;
 
 
 export async function api<T>(endpoint: string, options: ApiOptions = {}, setAccessToken: (token: string | null) => void , setUser: (user: User | null) => void = () => { }): Promise<T> {
@@ -39,8 +40,12 @@ export async function api<T>(endpoint: string, options: ApiOptions = {}, setAcce
 
     if (!retry && response.status === 401 && endpoint !== 'refresh' && setAccessToken) {
 
+        if (!refreshPromise) {
+            refreshPromise = refreshAccessToken()
+        }
         try {
-            const responseRefresh = await refreshAccessToken();
+            const responseRefresh = await refreshPromise ;
+            
             console.log(responseRefresh);
 
             if (!responseRefresh.token) {

@@ -37,9 +37,9 @@ export type CourseFormData = {
 
 export type CourseCardProps = {
     course: Course;
-    setModalMode: React.Dispatch<React.SetStateAction<"create" | "edit">>;
-    setSelectedCourse: React.Dispatch<React.SetStateAction<CourseFormData | null>>;
-    setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
-    handleDeleteCourse: (courseId: number) => void; 
+    setModalMode?: React.Dispatch<React.SetStateAction<"create" | "edit">>;
+    setSelectedCourse?: React.Dispatch<React.SetStateAction<CourseFormData | null>>;
+    setShowForm?: React.Dispatch<React.SetStateAction<boolean>>;
+    handleDeleteCourse?: (courseId: number) => void; 
 }
 

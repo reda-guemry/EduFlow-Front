@@ -15,6 +15,7 @@ export type AuthContextType = {
     setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
     setAuthLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    navigate: (path: string) => void;
 }
 
 export type AuthRefresh = {
