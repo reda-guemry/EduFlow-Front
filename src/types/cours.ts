@@ -41,5 +41,8 @@ export type CourseCardProps = {
     setSelectedCourse?: React.Dispatch<React.SetStateAction<CourseFormData | null>>;
     setShowForm?: React.Dispatch<React.SetStateAction<boolean>>;
     handleDeleteCourse?: (courseId: number) => void; 
+    isFavorite?: boolean;
+    onToggleFavorite?: (id: number , isFavorite: boolean) => void;
+    student?: boolean;  
 }
 

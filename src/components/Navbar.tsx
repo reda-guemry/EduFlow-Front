@@ -2,12 +2,11 @@ import { useAuth } from "../customhook/useAuth";
 import { logout } from "../services/authService";
 
 function Navbar() {
+  const { setAccessToken, setUser, navigate, user } = useAuth();
 
-    const { setAccessToken, setUser, navigate } = useAuth();
-    
-     const handleLogout = () => {
-        logout(setAccessToken, setUser, navigate);
-     };
+  const handleLogout = () => {
+    logout(setAccessToken, setUser, navigate);
+  };
 
   return (
     <nav className="bg-white shadow-sm border-b">
@@ -17,15 +16,46 @@ function Navbar() {
         </div>
 
         <div className="flex items-center gap-6 text-gray-700 font-medium">
-          <button className="hover:text-blue-600 transition">Dashboard</button>
-          <button className="hover:text-blue-600 transition">My Courses</button>
-          <button className="hover:text-blue-600 transition">Students</button>
-          <button
-            className="hover:text-red-600 transition"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+          {user && (
+            <span className="text-lg font-semibold">
+              Welcome, {user.first_name} {user.last_name}
+            </span>
+          )}
+
+          <button className="hover:text-blue-600 transition" onClick={() => navigate('/dashboard')} >Dashboard</button>
+
+          {user?.role === "student" && (
+            <button
+              className="hover:text-blue-600 transition"
+              onClick={() => navigate("/student/favorites")}
+            >
+              Favorites
+            </button>
+          )}
+
+          {(user && (
+            <button
+              className="hover:text-red-600 transition"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          )) || (
+            <>
+              <button
+                className="hover:text-blue-600 transition"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+              <button
+                className="hover:text-blue-600 transition"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </>
+          )}
         </div>
       </div>
     </nav>

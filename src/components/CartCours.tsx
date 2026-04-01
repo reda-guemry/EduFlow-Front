@@ -1,6 +1,18 @@
 import type { CourseCardProps } from "../types/cours";
 
-function CartCours({ course , setModalMode, setSelectedCourse, setShowForm , handleDeleteCourse }: CourseCardProps) {
+function CartCours({
+  course,
+  setModalMode,
+  setSelectedCourse,
+  setShowForm,
+  handleDeleteCourse,
+  isFavorite = false,
+  onToggleFavorite,
+  student ,
+}: CourseCardProps) {
+  const isTeacherView =
+    setModalMode && setSelectedCourse && setShowForm && handleDeleteCourse;
+
   return (
     <>
       <div
@@ -22,27 +34,44 @@ function CartCours({ course , setModalMode, setSelectedCourse, setShowForm , han
             ${course.price}
           </span>
 
-
+          {isTeacherView && (
             <div className="flex gap-3">
-
-          <button
-              onClick={() => {
-                setModalMode("edit");
-                setSelectedCourse(course);
-                setShowForm(true);
-              }}
-              className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition text-sm font-medium"
-            >
-              Edit
-            </button>
-
-            <button
-              onClick={() => handleDeleteCourse(course.id)}
-              className="cursor-pointer bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-sm font-medium"
-            >
-              Delete
-            </button>
+              <button
+                onClick={() => {
+                  setModalMode("edit");
+                  setSelectedCourse(course);
+                  setShowForm(true);
+                }}
+                className="cursor-pointer bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 transition text-sm font-medium"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDeleteCourse(course.id)}
+                className="cursor-pointer bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-sm font-medium"
+              >
+                Delete
+              </button>
             </div>
+          )}
+
+          {student && isFavorite  ? (
+            <button
+              onClick={() => onToggleFavorite?.(course.id, isFavorite)}
+              className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold cursor-pointer "
+            >
+              Favorite
+            </button>
+          ) : (
+            <button
+              onClick={() => onToggleFavorite?.(course.id, isFavorite)}
+              className="cursor-pointer bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 transition text-sm font-medium"
+            >
+              Add to Favorites
+            </button>
+          )}
+  
+
 
         </div>
 
@@ -80,7 +109,7 @@ function CartCours({ course , setModalMode, setSelectedCourse, setShowForm , han
 
         <div className="mt-6 flex justify-end">
           <button className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
-            Details
+            {student ? "Enroll Now" : "View Details"}
           </button>
         </div>
       </div>

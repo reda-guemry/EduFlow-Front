@@ -7,32 +7,36 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckRoleNavigate from "./components/CheckRoleNavigate";
+import Favorite from "./pages/Favorite";
+import { useAuth } from "./customhook/useAuth";
 
 function App() {
+
+  // const { user } = useAuth();
+
+
   return (
     <>
       <div className="min-h-screen bg-gray-100 flex flex-col">
         <Navbar />
         <Routes>
-          
-          <Route path="/" element={<CheckRoleNavigate />}>
+
+          {/* <Route navigate={user ? true : false} > */}
             <Route path="/login" element={<LoginPage />}></Route>
             <Route path="/register" element={<RegisterPage />}></Route>
-          </Route>
+            <Route path="/" element={<LoginPage />} ></Route>
+          {/* </Route> */}
 
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<CheckRoleNavigate />}></Route>
-            <Route path="/" element={<LoginPage />}></Route>
 
-            <Route
-              path="/student/dashboard"
-              element={<DashboardStudent />}
-            ></Route>
+            <Route path="/student/dashboard" element={<DashboardStudent />}></Route>
+            <Route path="/teacher/dashboard" element={<DashboardTeacher />}></Route>
+            <Route path="/student/favorites" element={<Favorite />}></Route>
 
-            <Route
-              path="/teacher/dashboard"
-              element={<DashboardTeacher />}
-            ></Route>
+
+
+
           </Route>
         </Routes>
         <Footer />
