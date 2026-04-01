@@ -50,6 +50,7 @@ function TeacherDashboard() {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
+
     const data = {
       title: formData.get("title") as string,
       description: formData.get("description") as string,

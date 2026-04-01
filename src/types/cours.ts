@@ -17,6 +17,17 @@ export type Course = {
     groups?: GroupProgress[];
 };
 
+export type CourseDetails = {
+    id: number;
+    title: string;
+    description: string;
+    price: number;
+    category : Category
+    groups?: GroupProgress[];
+    
+}
+
+
 export type Category = {
     id: number;
     name: string;
@@ -46,3 +57,27 @@ export type CourseCardProps = {
     student?: boolean;  
 }
 
+
+export type CourseFormModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+
+  formdata: CourseFormData;
+
+  categories: Category[];
+
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+
+  setFormData?: React.Dispatch<
+    React.SetStateAction<{
+      title: string;
+      description: string;
+      price: number;
+      category_id: number;
+    }>
+  >;
+
+  mode?: "create" | "edit";
+
+  initialData?: Partial<Course>;
+};

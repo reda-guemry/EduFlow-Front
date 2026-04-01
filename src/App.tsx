@@ -8,6 +8,9 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckRoleNavigate from "./components/CheckRoleNavigate";
 import Favorite from "./pages/Favorite";
+import DetailsCours from "./pages/DetailsCours";
+import PurchaseSuccess from "./pages/PurchaseSuccess";
+import PurchaseCancel from "./pages/PurchaseCancel";
 
 
 function App() {
@@ -34,6 +37,11 @@ function App() {
             <Route path="/student/dashboard" element={<DashboardStudent />}></Route>
             <Route path="/teacher/dashboard" element={<DashboardTeacher />}></Route>
             <Route path="/student/favorites" element={<Favorite />}></Route>
+
+            <Route path='/courses/:id' element={<DetailsCours />} ></Route>
+            <Route path="/checkout/success" element={<PurchaseSuccess />} ></Route>
+            <Route path="/checkout/cancel" element={<PurchaseCancel />} ></Route>
+
 
           </Route>
         </Routes>

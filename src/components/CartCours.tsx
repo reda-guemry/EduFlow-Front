@@ -1,3 +1,4 @@
+import { useAuth } from "../customhook/useAuth";
 import type { CourseCardProps } from "../types/cours";
 
 function CartCours({
@@ -12,6 +13,9 @@ function CartCours({
 }: CourseCardProps) {
   const isTeacherView =
     setModalMode && setSelectedCourse && setShowForm && handleDeleteCourse;
+
+
+    const { navigate } = useAuth();
 
   return (
     <>
@@ -71,7 +75,7 @@ function CartCours({
                 Add to Favorites
               </button>
             ))}
-            
+
         </div>
 
         <p className="text-gray-600 mt-4">{course.description}</p>
@@ -107,8 +111,8 @@ function CartCours({
         </div>
 
         <div className="mt-6 flex justify-end">
-          <button className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
-            {student ? "Enroll Now" : "View Details"}
+          <button onClick={() => navigate(`/courses/${course.id}`)} className="bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
+            View Details
           </button>
         </div>
       </div>

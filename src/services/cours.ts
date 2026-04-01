@@ -1,5 +1,5 @@
 import type { User } from "../types/auth";
-import type { Course, TeacherCoursesResponse } from "../types/cours";
+import type { Course, CourseDetails, TeacherCoursesResponse } from "../types/cours";
 import { apiCall } from "./api";
 
 
@@ -112,3 +112,25 @@ export async function fetchCourses(
     onUnauthorized ,
     );
 }
+
+
+export async function fetchCourseById(
+    accessToken: string | null,
+    setAccessToken: (token: string | null) => void,
+    onUnauthorized: () => void,
+    setUser: (user: User | null) => void,
+    courseId: number
+){
+    return apiCall<CourseDetails>(`courses/${courseId}`, {
+        method: "GET",
+        accessToken: accessToken,
+        headers: {
+            "Accept": "application/json",
+        },
+    },
+    setAccessToken ,
+    setUser, 
+    onUnauthorized ,
+    );
+}
+

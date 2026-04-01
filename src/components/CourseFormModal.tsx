@@ -1,29 +1,7 @@
 import { use, useEffect } from "react";
-import type { Category, CourseFormData } from "../types/cours";
+import type { CourseFormModalProps } from "../types/cours";
 
-type CourseFormModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
 
-  formdata: CourseFormData;
-
-  categories: Category[];
-
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-
-  setFormData?: React.Dispatch<
-    React.SetStateAction<{
-      title: string;
-      description: string;
-      price: number;
-      category_id: number;
-    }>
-  >;
-
-  mode?: "create" | "edit";
-
-  initialData?: Partial<CourseFormData>;
-};
 
 function CourseFormModal({
   isOpen,
@@ -56,9 +34,10 @@ function CourseFormModal({
             title : '', 
             description : '' , 
             price: 0 , 
-            category_id: 0
+            category_id: 0 , 
         })) ; 
     }
+
   }, [isOpen, mode, initialData]);
 
   if (!isOpen) return null;
