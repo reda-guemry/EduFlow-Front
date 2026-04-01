@@ -8,7 +8,7 @@ function CartCours({
   handleDeleteCourse,
   isFavorite = false,
   onToggleFavorite,
-  student ,
+  student,
 }: CourseCardProps) {
   const isTeacherView =
     setModalMode && setSelectedCourse && setShowForm && handleDeleteCourse;
@@ -55,24 +55,23 @@ function CartCours({
             </div>
           )}
 
-          {student && isFavorite  ? (
-            <button
-              onClick={() => onToggleFavorite?.(course.id, isFavorite)}
-              className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold cursor-pointer "
-            >
-              Favorite
-            </button>
-          ) : (
-            <button
-              onClick={() => onToggleFavorite?.(course.id, isFavorite)}
-              className="cursor-pointer bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 transition text-sm font-medium"
-            >
-              Add to Favorites
-            </button>
-          )}
-  
-
-
+          {student &&
+            (isFavorite ? (
+              <button
+                onClick={() => onToggleFavorite?.(course.id, isFavorite)}
+                className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-semibold cursor-pointer "
+              >
+                Favorite
+              </button>
+            ) : (
+              <button
+                onClick={() => onToggleFavorite?.(course.id, isFavorite)}
+                className="cursor-pointer bg-gray-200 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-300 transition text-sm font-medium"
+              >
+                Add to Favorites
+              </button>
+            ))}
+            
         </div>
 
         <p className="text-gray-600 mt-4">{course.description}</p>

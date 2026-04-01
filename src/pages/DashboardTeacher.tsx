@@ -177,6 +177,7 @@ function TeacherDashboard() {
                 setSelectedCourse={setSelectedCourse}
                 setShowForm={setShowForm}
                 handleDeleteCourse={handleDeleteCourse}
+                student={false}
               />
             ))
           )}

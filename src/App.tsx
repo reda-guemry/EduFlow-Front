@@ -8,12 +8,13 @@ import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckRoleNavigate from "./components/CheckRoleNavigate";
 import Favorite from "./pages/Favorite";
-import { useAuth } from "./customhook/useAuth";
+
 
 function App() {
 
   // const { user } = useAuth();
 
+  
 
   return (
     <>
@@ -33,9 +34,6 @@ function App() {
             <Route path="/student/dashboard" element={<DashboardStudent />}></Route>
             <Route path="/teacher/dashboard" element={<DashboardTeacher />}></Route>
             <Route path="/student/favorites" element={<Favorite />}></Route>
-
-
-
 
           </Route>
         </Routes>

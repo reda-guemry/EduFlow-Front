@@ -3,11 +3,7 @@ import { fetchCourses } from "../services/cours";
 import { useAuth } from "../customhook/useAuth";
 import type { Course } from "../types/cours";
 import CartCours from "../components/CartCours";
-import {
-  addFavorite,
-  fetchFavorite,
-  toggleFavorite,
-} from "../services/favorite";
+import { fetchFavorite, toggleFavorite } from "../services/favorite";
 
 export default function DashboardStudent() {
   const { accessToken, setAccessToken, setUser, handleAuthError } = useAuth();
@@ -70,7 +66,9 @@ export default function DashboardStudent() {
         isFavorite,
       );
 
-        setFavoriteCourseIds( (prev) => isFavorite ? prev.filter((id) => id !== courseId ) : [...prev , courseId] )
+      setFavoriteCourseIds((prev) =>
+        isFavorite ? prev.filter((id) => id !== courseId) : [...prev, courseId],
+      );
 
       //   console.log(respons);
     } catch (error) {
@@ -82,9 +80,6 @@ export default function DashboardStudent() {
   useEffect(() => {
     document.title = "Dashboard Student - EduFlow";
     fetchCoursesData();
-  }, []);
-
-  useEffect(() => {
     fetchFavoriteCourses();
   }, []);
 

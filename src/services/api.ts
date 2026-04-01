@@ -2,10 +2,13 @@ import type { ApiOptions } from "../types/apiOption";
 import { ApiError } from "../types/eureur";
 import { refreshAccessToken } from "./authService";
 import type { AuthRefresh, User } from "../types/auth";
+import { useAuth } from "../customhook/useAuth";
 
 
 
 let refreshPromise: Promise<AuthRefresh> | null = null;
+
+// const { setAccessToken, setUser } = useAuth()
 
 
 export async function api<T>(endpoint: string, options: ApiOptions = {}, setAccessToken: (token: string | null) => void , setUser: (user: User | null) => void = () => { }): Promise<T> {

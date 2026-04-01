@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../customhook/useAuth";
 
 function ProtectedRoute() {
-  const { accessToken, authLoading } = useAuth();
+  const { accessToken, authLoading , user } = useAuth();
 
   if (authLoading) {
     return <div className="text-center">Loading...</div>;
