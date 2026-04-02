@@ -11,6 +11,7 @@ import Favorite from "./pages/Favorite";
 import DetailsCours from "./pages/DetailsCours";
 import PurchaseSuccess from "./pages/PurchaseSuccess";
 import PurchaseCancel from "./pages/PurchaseCancel";
+import Profile from "./pages/Profile";
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
             <Route path="/checkout/success" element={<PurchaseSuccess />} ></Route>
             <Route path="/checkout/cancel" element={<PurchaseCancel />} ></Route>
 
+            <Route path="/profile" element={<Profile />} ></Route>
 
           </Route>
         </Routes>

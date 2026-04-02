@@ -22,7 +22,12 @@ function Navbar() {
             </span>
           )}
 
-          <button className="hover:text-blue-600 transition" onClick={() => navigate('/dashboard')} >Dashboard</button>
+          <button
+            className="hover:text-blue-600 transition"
+            onClick={() => navigate("/dashboard")}
+          >
+            Dashboard
+          </button>
 
           {user?.role === "student" && (
             <button
@@ -34,12 +39,20 @@ function Navbar() {
           )}
 
           {(user && (
-            <button
-              className="hover:text-red-600 transition"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            <>
+              <button
+                className="hover:text-red-600 transition"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+
+              <button>
+                <a onClick={() => navigate('/profile')} className="hover:text-blue-600 transition">
+                  Profile
+                </a>
+              </button>
+            </>
           )) || (
             <>
               <button
